@@ -7,9 +7,6 @@ resolver = "2"
 [lib]
 crate-type = ["cdylib", "rlib"]
 
-[build]
-rustflags = ["-Z", "threads=8"]
-
 [dependencies]
 axum = { version = "0.7", optional = true, features = ["ws"] }
 console_error_panic_hook = "0.1"
@@ -28,7 +25,7 @@ sysinfo = "0.30.12"
 human_bytes = "0.4.3"
 leptos_server_signal = { version = "0.6.0" }
 serde = { version = "1.0.202", features = ["derive"] }
-leptos-use = "0.10.10"
+lazy_static = "1.4.0"
 
 [features]
 hydrate = ["leptos/hydrate", "leptos_meta/hydrate", "leptos_router/hydrate"]

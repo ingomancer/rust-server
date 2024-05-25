@@ -1,20 +1,18 @@
+use std::time::Duration;
+
+#[cfg(feature = "ssr")]
 use human_bytes::human_bytes;
 use leptos::{
-    component, create_signal, server, spawn_local, view, IntoView, ServerFnError, SignalGet,
-    SignalSet,
+    component, create_effect, create_signal, server, set_interval, spawn_local, view, IntoView,
+    ServerFnError, SignalGet, SignalSet,
 };
-use leptos_use::use_interval_fn;
-use serde::{Deserialize, Serialize};
-use sysinfo::System;
 
-#[derive(Clone, Default, Serialize, Deserialize)]
-pub struct Memory {
-    pub value: String,
-}
+#[cfg(feature = "ssr")]
+use crate::sysinfo::SYSTEM;
 
 #[server(UpdateMemory, "/api")]
-async fn update_memory() -> Result<Memory, ServerFnError> {
-    let mut sys = System::new_all();
+async fn update_memory() -> Result<String, ServerFnError> {
+    let mut sys = SYSTEM.lock().unwrap();
     sys.refresh_all();
     let mem_str = format!(
         "{}/{}",
@@ -22,26 +20,26 @@ async fn update_memory() -> Result<Memory, ServerFnError> {
         human_bytes(sys.total_memory() as f64)
     );
 
-    Ok(Memory { value: mem_str })
+    Ok(mem_str)
 }
 
 /// Displays system memory
 #[component]
 pub fn Memory() -> impl IntoView {
-    let (mem, set_mem) = create_signal(Memory {
-        value: "".to_string(),
+    let (mem, set_mem) = create_signal("".to_string());
+
+    create_effect(move |_| {
+        set_interval(
+            move || {
+                spawn_local(async move {
+                    set_mem.set(update_memory().await.unwrap());
+                })
+            },
+            Duration::from_millis(1000),
+        )
     });
 
-    use_interval_fn(
-        move || {
-            spawn_local(async move {
-                set_mem.set(update_memory().await.unwrap());
-            })
-        },
-        1000,
-    );
-
     view! {
-        <p> "Memory: " {move || mem.get().value} </p>
+        <p> "Memory: " {move || mem.get()} </p>
     }
 }
