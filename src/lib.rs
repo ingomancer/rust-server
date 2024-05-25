@@ -1,9 +1,11 @@
 pub mod app;
-pub mod error_template;
+mod cpus;
+mod disks;
+mod error_template;
 #[cfg(feature = "ssr")]
 pub mod fileserv;
-pub mod memory;
-pub mod sysinfo;
+mod memory;
+mod sysinfo;
 
 #[cfg(feature = "hydrate")]
 #[wasm_bindgen::prelude::wasm_bindgen]

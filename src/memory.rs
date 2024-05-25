@@ -12,8 +12,8 @@ use crate::sysinfo::SYSTEM;
 
 #[server(UpdateMemory, "/api")]
 async fn update_memory() -> Result<String, ServerFnError> {
-    let mut sys = SYSTEM.lock().unwrap();
-    sys.refresh_all();
+    let sys = &mut SYSTEM.lock().unwrap().system;
+    sys.refresh_memory();
     let mem_str = format!(
         "{}/{}",
         human_bytes(sys.used_memory() as f64),

@@ -1,4 +1,6 @@
 use crate::{
+    cpus::Cpus,
+    disks::Disks,
     error_template::{AppError, ErrorTemplate},
     memory::Memory,
 };
@@ -44,14 +46,11 @@ pub fn App() -> impl IntoView {
 #[component]
 fn HomePage() -> impl IntoView {
     // Creates a reactive value to update the button
-    let (count, set_count) = create_signal(0);
-    let on_click = move |_| {
-        set_count.update(|count| *count += 1);
-    };
 
     view! {
-        <h1>"Welcome to Leptos!"</h1>
-        <button on:click=on_click>"Click Me: " {count}</button>
+        <h1>"ingo's server info webpage woop"</h1>
         <Memory/>
+        <Disks/>
+        <Cpus/>
     }
 }
