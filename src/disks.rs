@@ -30,7 +30,6 @@ async fn update_disks() -> Result<String, ServerFnError> {
         string
     });
     let string = string.trim_end_matches(',');
-    println!("Getting disk");
     Ok(string.to_string())
 }
 

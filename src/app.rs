@@ -56,31 +56,24 @@ fn HomePage() -> impl IntoView {
 
     let (displayed_info, set_displayed_info) = create_signal(DisplayedInfo::Memory);
 
-    view! {
+    let mem_click = move |_| set_displayed_info.set(DisplayedInfo::Memory);
+    let disk_click = move |_| set_displayed_info.set(DisplayedInfo::Disks);
+    let cpu_click = move |_| set_displayed_info.set(DisplayedInfo::Cpu);
 
+    view! {
         <div class="topnav">
             <h1>"ingo's server info webpage woop"</h1>
-
         </div>
         <div class="sidenav">
-            <a on:click=move |_| {
-                set_displayed_info.set(DisplayedInfo::Memory)
-            }>"Memory"</a>
-            <a on:click=move |_| {
-                set_displayed_info.set(DisplayedInfo::Disks)
-            }>"Disks"</a>
-            <a on:click=move |_| {
-                set_displayed_info.set(DisplayedInfo::Cpu)
-            }>"CPU"</a>
+            <a on:click=mem_click>"Memory"</a>
+            <a on:click=disk_click>"Disks"</a>
+            <a on:click=cpu_click>"CPU"</a>
         </div>
-
         { move || match displayed_info.get() {
             DisplayedInfo::Memory => view! {<Memory/>},
             DisplayedInfo::Disks => view! {<Disks/>},
             DisplayedInfo::Cpu => view! {<Cpus/>},
         }}
-
-
 
     }
 }

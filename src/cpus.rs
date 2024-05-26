@@ -25,7 +25,6 @@ async fn update_cpus() -> Result<String, ServerFnError> {
             string
         });
     let string = string.trim_end_matches(',');
-    println!("Getting cpu");
     Ok(string.to_string())
 }
 

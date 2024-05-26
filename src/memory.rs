@@ -20,8 +20,6 @@ async fn update_memory() -> Result<String, ServerFnError> {
         human_bytes(sys.used_memory() as f64),
         human_bytes(sys.total_memory() as f64)
     );
-
-    println!("Getting memory");
     Ok(mem_str)
 }
 
