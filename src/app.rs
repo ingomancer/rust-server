@@ -42,15 +42,45 @@ pub fn App() -> impl IntoView {
     }
 }
 
+#[derive(Clone)]
+enum DisplayedInfo {
+    Memory,
+    Disks,
+    Cpu,
+}
+
 /// Renders the home page of your application.
 #[component]
 fn HomePage() -> impl IntoView {
     // Creates a reactive value to update the button
 
+    let (displayed_info, set_displayed_info) = create_signal(DisplayedInfo::Memory);
+
     view! {
-        <h1>"ingo's server info webpage woop"</h1>
-        <Memory/>
-        <Disks/>
-        <Cpus/>
+
+        <div class="topnav">
+            <h1>"ingo's server info webpage woop"</h1>
+
+        </div>
+        <div class="sidenav">
+            <a on:click=move |_| {
+                set_displayed_info.set(DisplayedInfo::Memory)
+            }>"Memory"</a>
+            <a on:click=move |_| {
+                set_displayed_info.set(DisplayedInfo::Disks)
+            }>"Disks"</a>
+            <a on:click=move |_| {
+                set_displayed_info.set(DisplayedInfo::Cpu)
+            }>"CPU"</a>
+        </div>
+
+        { move || match displayed_info.get() {
+            DisplayedInfo::Memory => view! {<Memory/>},
+            DisplayedInfo::Disks => view! {<Disks/>},
+            DisplayedInfo::Cpu => view! {<Cpus/>},
+        }}
+
+
+
     }
 }

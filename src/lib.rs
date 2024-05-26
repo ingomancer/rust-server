@@ -5,6 +5,7 @@ mod error_template;
 #[cfg(feature = "ssr")]
 pub mod fileserv;
 mod memory;
+#[cfg(feature = "ssr")]
 mod sysinfo;
 
 #[cfg(feature = "hydrate")]

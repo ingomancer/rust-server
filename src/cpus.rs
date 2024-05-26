@@ -3,9 +3,10 @@ use std::fmt::Write;
 use std::time::Duration;
 
 use leptos::{
-    component, create_effect, create_signal, server, set_interval, spawn_local, view, IntoView,
-    ServerFnError, SignalGet, SignalSet,
+    component, create_effect, create_signal, on_cleanup, server, set_interval_with_handle,
+    spawn_local, view, IntoView, ServerFnError, SignalGet, SignalSet,
 };
+use wasm_bindgen::JsValue;
 
 #[cfg(feature = "ssr")]
 use crate::sysinfo::SYSTEM;
@@ -24,6 +25,7 @@ async fn update_cpus() -> Result<String, ServerFnError> {
             string
         });
     let string = string.trim_end_matches(',');
+    println!("Getting cpu");
     Ok(string.to_string())
 }
 
@@ -31,17 +33,20 @@ async fn update_cpus() -> Result<String, ServerFnError> {
 #[component]
 pub fn Cpus() -> impl IntoView {
     let (cpus, set_cpus) = create_signal("".to_string());
+    let (handle, set_handle) = create_signal(Err(JsValue::null()));
 
     create_effect(move |_| {
-        set_interval(
+        set_handle.set(set_interval_with_handle(
             move || {
                 spawn_local(async move {
                     set_cpus.set(update_cpus().await.unwrap());
                 })
             },
             Duration::from_millis(1000),
-        )
+        ));
     });
+
+    on_cleanup(move || handle.get().unwrap().clear());
 
     view! {
         <p> "Cpu usage:" {move || cpus.get()} </p>

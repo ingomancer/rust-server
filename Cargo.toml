@@ -41,6 +41,8 @@ ssr = [
     "dep:tracing",
     "leptos_server_signal/ssr",
     "leptos_server_signal/axum",
+
+
 ]
 
 # Defines a size-optimized profile for the WASM bundle in release mode
