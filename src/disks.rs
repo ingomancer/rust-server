@@ -19,23 +19,16 @@ async fn update_disks() -> Result<String, ServerFnError> {
     let sys = &mut SYSTEM.lock().unwrap().disks;
     sys.refresh_list();
 
-    let string = sys
-        .list()
-        .iter()
-        .filter(|disk| match disk.kind() {
-            sysinfo::DiskKind::HDD | sysinfo::DiskKind::SSD => true,
-            sysinfo::DiskKind::Unknown(_) => false,
-        })
-        .fold(String::new(), |mut string, disk| {
-            let _ = write!(
-                string,
-                " {:?}: {}/{},",
-                disk.name(),
-                human_bytes(disk.total_space() as f64 - disk.available_space() as f64),
-                human_bytes(disk.total_space() as f64),
-            );
-            string
-        });
+    let string = sys.list().iter().fold(String::new(), |mut string, disk| {
+        let _ = write!(
+            string,
+            " {:?}: {}/{},",
+            disk.name(),
+            human_bytes(disk.total_space() as f64 - disk.available_space() as f64),
+            human_bytes(disk.total_space() as f64),
+        );
+        string
+    });
     let string = string.trim_end_matches(',');
     println!("Getting disk");
     Ok(string.to_string())
