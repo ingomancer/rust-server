@@ -5,6 +5,8 @@ use {
     leptos_axum::{generate_route_list, LeptosRoutes},
     rust_server::app::*,
     rust_server::fileserv::file_and_error_handler,
+    rust_server::sysinfo::update_all_sysinfos,
+    std::time::Duration,
 };
 
 #[cfg(feature = "ssr")]
@@ -26,6 +28,13 @@ async fn main() {
         .leptos_routes(&leptos_options, routes, App)
         .fallback(file_and_error_handler)
         .with_state(leptos_options);
+
+    tokio::spawn(async move {
+        loop {
+            update_all_sysinfos().await;
+            tokio::time::sleep(Duration::from_millis(500)).await;
+        }
+    });
 
     let listener = tokio::net::TcpListener::bind(&addr).await.unwrap();
     logging::log!("listening on http://{}", &addr);

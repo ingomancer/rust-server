@@ -13,8 +13,7 @@ use crate::sysinfo::SYSTEM;
 
 #[server(UpdateCpus, "/api")]
 async fn update_cpus() -> Result<String, ServerFnError> {
-    let sys = &mut SYSTEM.lock().unwrap().system;
-    sys.refresh_cpu();
+    let sys = &SYSTEM.read().await.system;
 
     let string = sys
         .cpus()

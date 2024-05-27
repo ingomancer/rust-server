@@ -16,8 +16,7 @@ use crate::sysinfo::SYSTEM;
 
 #[server(UpdateDisks, "/api")]
 async fn update_disks() -> Result<String, ServerFnError> {
-    let sys = &mut SYSTEM.lock().unwrap().disks;
-    sys.refresh_list();
+    let sys = &SYSTEM.read().await.disks;
 
     let string = sys.list().iter().fold(String::new(), |mut string, disk| {
         let _ = write!(

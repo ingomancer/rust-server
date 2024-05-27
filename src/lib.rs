@@ -6,7 +6,7 @@ mod error_template;
 pub mod fileserv;
 mod memory;
 #[cfg(feature = "ssr")]
-mod sysinfo;
+pub mod sysinfo;
 
 #[cfg(feature = "hydrate")]
 #[wasm_bindgen::prelude::wasm_bindgen]
